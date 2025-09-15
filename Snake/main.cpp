@@ -1,9 +1,12 @@
 #include <SDL2/SDL.h>
+#include <SDL_ttf.h>
+
 #include <vector>
 #include <algorithm>
+#include <iostream>
+
 #include "src/colors.hpp"
 #include "src/structs.hpp"
-#include <iostream>
 
 #define SET_DRAW_COLOR(color) (SDL_SetRenderDrawColor(renderer, (color).r, (color).g, (color).b, (color).a)) 
 
@@ -37,6 +40,14 @@ void render_gameplay(SDL_Renderer *renderer, GameContext game_context) {
     SDL_RenderPresent(renderer);
 
 }
+
+void render_gameover(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect dest_rect) {
+    SET_DRAW_COLOR(PUKE_GREEN);
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, NULL, &dest_rect);
+    SDL_RenderPresent(renderer);
+}
+
 
 void update_snake_position(Snake &snake) {
     Position head {
@@ -131,6 +142,7 @@ void update_game_context(GameContext &game_context, Direction new_direction) {
 
 int main() {
 
+    // Init SDL
     SDL_Init(SDL_INIT_EVERYTHING);
     auto window = SDL_CreateWindow(
         "Snake", 
@@ -141,6 +153,29 @@ int main() {
         0);
     auto renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_Event e;
+
+    // Init TTF
+    if(TTF_Init()==-1) {
+        printf("TTF_Init: %s\n", TTF_GetError());
+        exit(2);
+    }
+
+    TTF_Font *font;
+    font=TTF_OpenFont("../assets/retro_computer_personal_use.ttf", 128);
+    if(!font) {
+        printf("TTF_OpenFont: %s\n", TTF_GetError());
+        // handle error
+    }
+
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+    SDL_Surface* text = TTF_RenderText_Solid(font, "GAME OVER", DARK_GREEN);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, text);
+    SDL_Rect dest_rect {
+        .x=GRID_SIZE_PX * 2,
+        .y=GRID_SIZE_PX * 5,
+        .w=GRID_SIZE_PX * (W - 4),
+        .h=GRID_SIZE_PX * (H - 10)};
+
 
     GameContext game_context;
 
@@ -157,6 +192,11 @@ int main() {
                 if (e.key.keysym.sym == SDLK_UP) { dir = Direction::UP; }
                 if (e.key.keysym.sym == SDLK_LEFT) { dir = Direction::LEFT; }
                 if (e.key.keysym.sym == SDLK_RIGHT) { dir = Direction::RIGHT; }
+                if (e.key.keysym.sym == SDLK_RETURN &&
+                    game_context.state == GameState::GAMEOVER) {
+                        game_context.~GameContext();
+                        new (&game_context) GameContext();
+                    }
             }
         }
 
@@ -164,10 +204,20 @@ int main() {
         switch (game_context.state) {
             case GameState::RUNNING:
                 update_game_context(game_context, dir);
+                break;
+            case GameState::GAMEOVER:
+                break;
+            default:
+                std::cout << "Unexpected game state\n";
+                return 0;
+        }
+
+        switch (game_context.state) {
+            case GameState::RUNNING:
                 render_gameplay(renderer, game_context);
                 break;
             case GameState::GAMEOVER:
-                // Reset game
+                render_gameover(renderer, texture, dest_rect);
                 break;
             default:
                 std::cout << "Unexpected game state\n";
