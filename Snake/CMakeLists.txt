@@ -3,5 +3,5 @@ project(Snake)
 
 # Add Snake package
 find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
-add_executable(Snake main.cpp)
+add_executable(Snake main.cpp ./src/colors.hpp ./src/structs.hpp)
 target_link_libraries(Snake SDL2::SDL2)
