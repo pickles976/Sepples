@@ -27,10 +27,6 @@ class Position {
             this->y += new_y;
         }
 
-        bool operator== (Position& other) {
-            return this->x == other.x && this->y == other.y;
-        }
-
         bool operator== (const Position& other) {
             return this->x == other.x && this->y == other.y;
         }
@@ -57,9 +53,9 @@ class GameContext {
         GameContext () {
             snake = {
                 .positions = {
-                    Position {W/2, H/2},
-                    Position {(W/2) - 1, H/2},
                     Position {(W/2) - 2, H/2},
+                    Position {(W/2) - 1, H/2},
+                    Position {(W/2), H/2},
                 },
                 .direction = Direction::RIGHT
             };

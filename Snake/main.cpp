@@ -84,13 +84,14 @@ void update_game_context(GameContext &game_context, Direction new_direction) {
     }
 
     // Check for snake self-intersection
-    for (Position outer : game_context.snake.positions) {
-        for (Position inner : game_context.snake.positions) {
-            if (outer == inner) {
+    for (Position& outer : game_context.snake.positions) {
+        for (Position& inner : game_context.snake.positions) {
+
+            if (&outer == &inner) {
                 continue;
             }
 
-            if (outer.x == inner.x && outer.y == inner.y) {
+            if (outer == inner) {
                 game_context.state = GameState::GAMEOVER;
                 std::cout << "Snake self-intersected!\n";
                 return;
