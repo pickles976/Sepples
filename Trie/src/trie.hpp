@@ -22,7 +22,7 @@ public:
     TrieNode root;
 
     void insert(std::string word);
-    std::vector<std::string> search(std::string word);
+    bool search(std::string word);
     std::vector<std::string> startsWith(std::string prefix);
     void print();
 
