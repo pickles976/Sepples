@@ -3,26 +3,35 @@
 
 
 TrieNode::TrieNode () { 
-    this->children = {};
-    this->isEndOfword = false;
+    this->_children;
+    this->_isEndOfword = false;
 }
 
 bool TrieNode::has(char c) {
-    return this->children.count(c);
+    return this->_children.count(c);
 }
 
 TrieNode* TrieNode::get(char c) {
-    return &this->children[c];
+    return &this->_children[c];
 }
 
 void TrieNode::add(char c) {
-    this->children[c] = TrieNode();
+    this->_children[c] = TrieNode();
 }
 
-
-Trie::Trie() {
-    this->root = TrieNode();
+bool TrieNode::isEndOfWord() const {
+    return _isEndOfword;
 }
+
+void TrieNode::setEndOfWord() {
+    _isEndOfword = true;
+}
+
+std::unordered_map<char, TrieNode> TrieNode::getChildren() const {
+    return _children;
+}
+
+Trie::Trie() {}
 
 
 void Trie::insert(std::string word) {
@@ -34,7 +43,7 @@ void Trie::insert(std::string word) {
         }
         current_node = current_node->get(c);
     }
-    current_node->isEndOfword = true;
+    current_node->setEndOfWord();
 
 }
 
@@ -53,17 +62,17 @@ bool Trie::search(std::string word) {
         }
     }
 
-    return current_node->isEndOfword;
+    return current_node->isEndOfWord();
 
 }
 
 void startsWithHelper(const TrieNode* node, std::string word, std::vector<std::string>* words) {
 
-    if (node->isEndOfword) {
+    if (node->isEndOfWord()) {
         words->push_back(word);
     }
 
-    for (const auto& pair: node->children) {
+    for (const auto& pair: node->getChildren()) {
         startsWithHelper(&pair.second, word + pair.first, words);
     }
 
@@ -95,11 +104,11 @@ std::vector<std::string> Trie::startsWith(std::string prefix) {
 
 void printHelper(std::string str, const TrieNode* node) {
 
-    if (node->isEndOfword) {
+    if (node->isEndOfWord()) {
         std::cout << str << "\n";
     }
 
-    for (const auto& pair: node->children) {
+    for (const auto& pair: node->getChildren()) {
         printHelper(str+pair.first, &pair.second);
     }
 }

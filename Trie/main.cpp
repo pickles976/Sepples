@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "./src/trie.cpp"
+#include "./src/trie.hpp"
 
 int main() {
 

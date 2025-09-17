@@ -4,13 +4,19 @@
 
 class TrieNode {
 
-public:
-    std::unordered_map<char, TrieNode> children;
-    bool isEndOfword;
+private:
+    std::unordered_map<char, TrieNode> _children;
+    bool _isEndOfword;
 
+public:
     bool has(char c);
-    TrieNode* get(char c);
     void add(char c);
+    TrieNode* get(char c);
+
+    void setEndOfWord();
+
+    bool isEndOfWord() const;
+    std::unordered_map<char, TrieNode> getChildren() const;
 
     TrieNode();
     ~TrieNode(){};
@@ -18,9 +24,11 @@ public:
 };
 
 class Trie {
-public:
+
+private:
     TrieNode root;
 
+public:
     void insert(std::string word);
     bool search(std::string word);
     std::vector<std::string> startsWith(std::string prefix);
