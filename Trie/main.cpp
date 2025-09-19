@@ -2,6 +2,8 @@
 #include <string>
 #include "./src/trie.hpp"
 
+using namespace trie;
+
 int main() {
 
     Trie trie;

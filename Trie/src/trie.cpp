@@ -1,6 +1,8 @@
 #include <iostream>
 #include "trie.hpp"
 
+using namespace trie;
+
 
 TrieNode::TrieNode () { 
     this->children;
