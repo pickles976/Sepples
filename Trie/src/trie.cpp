@@ -3,32 +3,20 @@
 
 
 TrieNode::TrieNode () { 
-    this->_children;
-    this->_isEndOfword = false;
+    this->children;
+    this->isEndOfword = false;
 }
 
 bool TrieNode::has(char c) {
-    return this->_children.count(c);
+    return this->children.count(c);
 }
 
 TrieNode* TrieNode::get(char c) {
-    return &this->_children[c];
+    return &this->children[c];
 }
 
 void TrieNode::add(char c) {
-    this->_children[c] = TrieNode();
-}
-
-bool TrieNode::isEndOfWord() const {
-    return _isEndOfword;
-}
-
-void TrieNode::setEndOfWord() {
-    _isEndOfword = true;
-}
-
-std::unordered_map<char, TrieNode> TrieNode::getChildren() const {
-    return _children;
+    this->children[c] = TrieNode();
 }
 
 Trie::Trie() {}
@@ -43,7 +31,7 @@ void Trie::insert(std::string word) {
         }
         current_node = current_node->get(c);
     }
-    current_node->setEndOfWord();
+    current_node->isEndOfword = true;
 
 }
 
@@ -62,18 +50,18 @@ bool Trie::search(std::string word) {
         }
     }
 
-    return current_node->isEndOfWord();
+    return current_node->isEndOfword;
 
 }
 
-void startsWithHelper(const TrieNode* node, std::string word, std::vector<std::string>* words) {
+void Trie::startsWithHelper(const TrieNode* node, std::string word, std::vector<std::string>* words) {
 
-    if (node->isEndOfWord()) {
+    if (node->isEndOfword) {
         words->push_back(word);
     }
 
-    for (const auto& pair: node->getChildren()) {
-        startsWithHelper(&pair.second, word + pair.first, words);
+    for (const auto& pair: node->children) {
+        this->startsWithHelper(&pair.second, word + pair.first, words);
     }
 
 }
@@ -96,23 +84,23 @@ std::vector<std::string> Trie::startsWith(std::string prefix) {
     }
 
     std::vector<std::string> words;
-    startsWithHelper(current_node, word, &words);
+    this->startsWithHelper(current_node, word, &words);
 
     return words;
 
 }
 
-void printHelper(std::string str, const TrieNode* node) {
+void Trie::printHelper(std::string str, const TrieNode* node) {
 
-    if (node->isEndOfWord()) {
+    if (node->isEndOfword) {
         std::cout << str << "\n";
     }
 
-    for (const auto& pair: node->getChildren()) {
-        printHelper(str+pair.first, &pair.second);
+    for (const auto& pair: node->children) {
+        this->printHelper(str+pair.first, &pair.second);
     }
 }
 
 void Trie::print() {
-    printHelper("", &this->root);
+    this->printHelper("", &this->root);
 }

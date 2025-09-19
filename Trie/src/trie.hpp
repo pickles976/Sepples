@@ -5,21 +5,18 @@
 class TrieNode {
 
 private:
-    std::unordered_map<char, TrieNode> _children;
-    bool _isEndOfword;
+    std::unordered_map<char, TrieNode> children;
+    bool isEndOfword;
 
 public:
     bool has(char c);
     void add(char c);
     TrieNode* get(char c);
 
-    void setEndOfWord();
-
-    bool isEndOfWord() const;
-    std::unordered_map<char, TrieNode> getChildren() const;
-
     TrieNode();
     ~TrieNode(){};
+
+friend class Trie;
 
 };
 
@@ -27,6 +24,8 @@ class Trie {
 
 private:
     TrieNode root;
+    void startsWithHelper(const TrieNode* node, std::string word, std::vector<std::string>* words);
+    void printHelper(std::string str, const TrieNode* node);
 
 public:
     void insert(std::string word);
